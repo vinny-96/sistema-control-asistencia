@@ -1,0 +1,36 @@
+from conexion import Conexion
+
+
+class ReporteAtrasosDAO:
+
+    def obtener_atrasos(self):
+
+        conexion_db = Conexion().conectar()
+
+        if conexion_db is None:
+            return []
+
+        cursor = conexion_db.cursor()
+
+        sql = """
+        SELECT
+            a.id_usuario,
+            u.nombre,
+            a.fecha,
+            a.hora
+        FROM asistencias a
+        INNER JOIN usuarios u
+            ON a.id_usuario = u.id_usuario
+        WHERE a.accion = 'ENTRADA'
+        AND a.hora > '09:30:00'
+        ORDER BY a.fecha DESC, a.hora ASC
+        """
+
+        cursor.execute(sql)
+
+        resultados = cursor.fetchall()
+
+        cursor.close()
+        conexion_db.close()
+
+        return resultados
