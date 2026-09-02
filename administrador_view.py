@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from datetime import datetime
-
+from crear_usuario_view import CrearUsuarioView
 from reporte_atrasos_dao import ReporteAtrasosDAO
 from reporte_salidas_dao import ReporteSalidasDAO
 from reporte_inasistencias_dao import ReporteInasistenciasDAO
@@ -37,7 +37,18 @@ class AdministradorView:
             font=("Arial", 16)
         )
 
+                
         titulo.pack(pady=20)
+        boton_crear_usuario = tk.Button(
+            self.ventana,
+            text="Crear Usuario",
+            width=30,
+            command=self.abrir_crear_usuario
+        )
+
+        boton_crear_usuario.pack(
+            pady=5
+        )
 
 
         # BOTÓN REPORTE DE ATRASOS
@@ -318,6 +329,11 @@ class AdministradorView:
                     "INASISTENTE"
                 )
             )
+    def abrir_crear_usuario(self):
+
+        CrearUsuarioView(
+            self.ventana
+        )
 
 
     def cerrar_sesion(self):

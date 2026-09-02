@@ -14,12 +14,21 @@ class UsuarioDAO:
         cursor = conexion_db.cursor()
 
         sql = """
-        SELECT id_usuario, nombre, correo, contrasena, rol
+        SELECT
+            id_usuario,
+            nombre,
+            correo,
+            contrasena,
+            rol
         FROM usuarios
-        WHERE correo = %s AND contrasena = %s
+        WHERE correo = %s
+        AND contrasena = %s
         """
 
-        cursor.execute(sql, (correo, contrasena))
+        cursor.execute(
+            sql,
+            (correo, contrasena)
+        )
 
         resultado = cursor.fetchone()
 
@@ -39,4 +48,73 @@ class UsuarioDAO:
             return usuario
 
         return None
-    
+
+
+    def correo_existe(self, correo):
+
+        conexion_db = Conexion().conectar()
+
+        if conexion_db is None:
+            return False
+
+        cursor = conexion_db.cursor()
+
+        sql = """
+        SELECT id_usuario
+        FROM usuarios
+        WHERE correo = %s
+        """
+
+        cursor.execute(
+            sql,
+            (correo,)
+        )
+
+        resultado = cursor.fetchone()
+
+        cursor.close()
+        conexion_db.close()
+
+        if resultado:
+            return True
+
+        return False
+
+
+    def crear_usuario(
+        self,
+        nombre,
+        correo,
+        contrasena
+    ):
+
+        conexion_db = Conexion().conectar()
+
+        if conexion_db is None:
+            return False
+
+        cursor = conexion_db.cursor()
+
+        sql = """
+        INSERT INTO usuarios
+        (nombre, correo, contrasena, rol)
+        VALUES (%s, %s, %s, 'USUARIO')
+        """
+
+        datos = (
+            nombre,
+            correo,
+            contrasena
+        )
+
+        cursor.execute(
+            sql,
+            datos
+        )
+
+        conexion_db.commit()
+
+        cursor.close()
+        conexion_db.close()
+
+        return True
