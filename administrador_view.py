@@ -8,6 +8,9 @@ from reporte_atrasos_dao import ReporteAtrasosDAO
 from reporte_salidas_dao import ReporteSalidasDAO
 from reporte_inasistencias_dao import ReporteInasistenciasDAO
 
+from crear_usuario_view import CrearUsuarioView
+from modificar_usuario_view import ModificarUsuarioView
+
 
 class AdministradorView:
 
@@ -28,8 +31,14 @@ class AdministradorView:
 
         self.ventana = tk.Toplevel()
 
-        self.ventana.title("Panel Administrador")
-        self.ventana.geometry("650x520")
+        self.ventana.title(
+            "Panel Administrador"
+        )
+
+        self.ventana.geometry(
+            "650x580"
+        )
+
 
         titulo = tk.Label(
             self.ventana,
@@ -37,10 +46,38 @@ class AdministradorView:
             font=("Arial", 16)
         )
 
-        titulo.pack(pady=20)
+        titulo.pack(
+            pady=20
+        )
 
 
-        # BOTÓN REPORTE DE ATRASOS
+        # CREAR USUARIO
+        boton_crear_usuario = tk.Button(
+            self.ventana,
+            text="Crear Usuario",
+            width=30,
+            command=self.abrir_crear_usuario
+        )
+
+        boton_crear_usuario.pack(
+            pady=5
+        )
+
+
+        # MODIFICAR USUARIO
+        boton_modificar_usuario = tk.Button(
+            self.ventana,
+            text="Modificar Usuario",
+            width=30,
+            command=self.abrir_modificar_usuario
+        )
+
+        boton_modificar_usuario.pack(
+            pady=5
+        )
+
+
+        # REPORTE DE ATRASOS
         boton_reporte = tk.Button(
             self.ventana,
             text="Reporte de Entradas Atrasadas",
@@ -48,10 +85,12 @@ class AdministradorView:
             command=self.mostrar_reporte
         )
 
-        boton_reporte.pack(pady=5)
+        boton_reporte.pack(
+            pady=5
+        )
 
 
-        # BOTÓN REPORTE DE SALIDAS ANTICIPADAS
+        # REPORTE DE SALIDAS
         boton_salidas = tk.Button(
             self.ventana,
             text="Reporte de Salidas Anticipadas",
@@ -59,15 +98,19 @@ class AdministradorView:
             command=self.mostrar_salidas_anticipadas
         )
 
-        boton_salidas.pack(pady=5)
+        boton_salidas.pack(
+            pady=5
+        )
 
 
-        # SELECCIÓN DE FECHA PARA INASISTENCIAS
+        # FECHA PARA INASISTENCIAS
         frame_fecha = tk.Frame(
             self.ventana
         )
 
-        frame_fecha.pack(pady=10)
+        frame_fecha.pack(
+            pady=10
+        )
 
 
         etiqueta_fecha = tk.Label(
@@ -105,9 +148,15 @@ class AdministradorView:
         # TABLA
         self.tabla = ttk.Treeview(
             self.ventana,
-            columns=("id", "nombre", "fecha", "hora"),
+            columns=(
+                "id",
+                "nombre",
+                "fecha",
+                "hora"
+            ),
             show="headings"
         )
+
 
         self.tabla.heading(
             "id",
@@ -159,23 +208,38 @@ class AdministradorView:
         )
 
 
-        # BOTÓN CERRAR SESIÓN
+        # CERRAR SESIÓN
         boton_cerrar = tk.Button(
             self.ventana,
             text="Cerrar sesión",
             command=self.cerrar_sesion
         )
 
-        boton_cerrar.pack(pady=10)
+        boton_cerrar.pack(
+            pady=10
+        )
+
+
+    def abrir_crear_usuario(self):
+
+        CrearUsuarioView(
+            self.ventana
+        )
+
+
+    def abrir_modificar_usuario(self):
+
+        ModificarUsuarioView(
+            self.ventana
+        )
 
 
     def mostrar_reporte(self):
 
-        # Limpiar resultados anteriores
         for fila in self.tabla.get_children():
             self.tabla.delete(fila)
 
-        # Cambiar encabezados
+
         self.tabla.heading(
             "fecha",
             text="Fecha"
@@ -186,9 +250,11 @@ class AdministradorView:
             text="Hora Entrada"
         )
 
+
         atrasos = (
             self.atrasos_dao.obtener_atrasos()
         )
+
 
         for atraso in atrasos:
 
@@ -206,11 +272,10 @@ class AdministradorView:
 
     def mostrar_salidas_anticipadas(self):
 
-        # Limpiar resultados anteriores
         for fila in self.tabla.get_children():
             self.tabla.delete(fila)
 
-        # Cambiar encabezados
+
         self.tabla.heading(
             "fecha",
             text="Fecha"
@@ -221,9 +286,11 @@ class AdministradorView:
             text="Hora Salida"
         )
 
+
         salidas = (
             self.salidas_dao.obtener_salidas_anticipadas()
         )
+
 
         for salida in salidas:
 
@@ -241,9 +308,11 @@ class AdministradorView:
 
     def mostrar_inasistencias(self):
 
-        fecha = self.txt_fecha.get()
+        fecha = (
+            self.txt_fecha.get()
+        )
 
-        # Validar que se ingrese una fecha
+
         if fecha == "":
 
             messagebox.showwarning(
@@ -254,7 +323,6 @@ class AdministradorView:
             return
 
 
-        # Validar formato de fecha
         try:
 
             datetime.strptime(
@@ -272,12 +340,10 @@ class AdministradorView:
             return
 
 
-        # Limpiar resultados anteriores
         for fila in self.tabla.get_children():
             self.tabla.delete(fila)
 
 
-        # Cambiar encabezados
         self.tabla.heading(
             "id",
             text="ID Usuario"
